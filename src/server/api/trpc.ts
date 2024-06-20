@@ -97,6 +97,7 @@ export const publicProcedure = t.procedure;
  */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
+    // 这里重定向到登录页面
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({

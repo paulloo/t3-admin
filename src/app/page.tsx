@@ -1,4 +1,4 @@
-import { CreatePost } from "~/app/_components/create-post";
+import { CreatePost } from "~/app/components/create-post";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 import Image from "next/image"
@@ -83,57 +83,16 @@ export default async function Dashboard() {
   const hello = await api.post.hello({ text: "from tRPC" });
   const session = await getServerAuthSession();
 
+  const deptList = await api.dept.getlist().catch((err) => {
+    console.error(err);
+    return [];
+  })
+
+  // const deptList = []
+  console.log("deptList: ", deptList)
+
   return (
-    // <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-    //   <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-    //     <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-    //       Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-    //     </h1>
-    //     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-    //       <Link
-    //         className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-    //         href="https://create.t3.gg/en/usage/first-steps"
-    //         target="_blank"
-    //       >
-    //         <h3 className="text-2xl font-bold">First Steps →</h3>
-    //         <div className="text-lg">
-    //           Just the basics - Everything you need to know to set up your
-    //           database and authentication.
-    //         </div>
-    //       </Link>
-    //       <Link
-    //         className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-    //         href="https://create.t3.gg/en/introduction"
-    //         target="_blank"
-    //       >
-    //         <h3 className="text-2xl font-bold">Documentation →</h3>
-    //         <div className="text-lg">
-    //           Learn more about Create T3 App, the libraries it uses, and how to
-    //           deploy it.
-    //         </div>
-    //       </Link>
-    //     </div>
-    //     <div className="flex flex-col items-center gap-2">
-    //       <p className="text-2xl text-white">
-    //         {hello ? hello.greeting : "Loading tRPC query..."}
-    //       </p>
-
-    //       <div className="flex flex-col items-center justify-center gap-4">
-    //         <p className="text-center text-2xl text-white">
-    //           {session && <span>Logged in as {session.user?.name}</span>}
-    //         </p>
-    //         <Link
-    //           href={session ? "/api/auth/signout" : "/api/auth/signin"}
-    //           className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-    //         >
-    //           {session ? "Sign out" : "Sign in"}
-    //         </Link>
-    //       </div>
-    //     </div>
-
-    //     <CrudShowcase />
-    //   </div>
-    // </main>
+    
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
     <TooltipProvider>
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -332,8 +291,64 @@ export default async function Dashboard() {
         </DropdownMenu>
       </header>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+
+        
+      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+            <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+              <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
+                Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
+              </h1>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+                <Link
+                  className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
+                  href="https://create.t3.gg/en/usage/first-steps"
+                  target="_blank"
+                >
+                  <h3 className="text-2xl font-bold">First Steps →</h3>
+                  <div className="text-lg">
+                    Just the basics - Everything you need to know to set up your
+                    database and authentication.
+                  </div>
+                </Link>
+                <Link
+                  className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
+                  href="https://create.t3.gg/en/introduction"
+                  target="_blank"
+                >
+                  <h3 className="text-2xl font-bold">Documentation →</h3>
+                  <div className="text-lg">
+                    Learn more about Create T3 App, the libraries it uses, and how to
+                    deploy it.
+                  </div>
+                </Link>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-2xl text-white">
+                  {hello ? hello.greeting : "Loading tRPC query..."}
+                </p>
+
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <p className="text-center text-2xl text-white">
+                    {session && <span>Logged in as {session.user?.name}</span>}
+                  </p>
+                  <Link
+                    href={session ? "/api/auth/signout" : "/api/auth/signin"}
+                    className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+                  >
+                    {session ? "Sign out" : "Sign in"}
+                  </Link>
+                </div>
+              </div>
+
+              <CrudShowcase />
+            </div>
+          </main>
+
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+
+
+
             <Card
               className="sm:col-span-2" x-chunk="dashboard-05-chunk-0"
             >
@@ -446,146 +461,30 @@ export default async function Dashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow className="bg-accent">
-                        <TableCell>
-                          <div className="font-medium">Liam Johnson</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            liam@example.com
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          Sale
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="secondary">
-                            Fulfilled
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-06-23
-                        </TableCell>
-                        <TableCell className="text-right">$250.00</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Olivia Smith</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            olivia@example.com
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          Refund
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="outline">
-                            Declined
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-06-24
-                        </TableCell>
-                        <TableCell className="text-right">$150.00</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Noah Williams</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            noah@example.com
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          Subscription
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="secondary">
-                            Fulfilled
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-06-25
-                        </TableCell>
-                        <TableCell className="text-right">$350.00</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Emma Brown</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            emma@example.com
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          Sale
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="secondary">
-                            Fulfilled
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-06-26
-                        </TableCell>
-                        <TableCell className="text-right">$450.00</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Liam Johnson</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            liam@example.com
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          Sale
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="secondary">
-                            Fulfilled
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-06-23
-                        </TableCell>
-                        <TableCell className="text-right">$250.00</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Liam Johnson</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            liam@example.com
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          Sale
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="secondary">
-                            Fulfilled
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-06-23
-                        </TableCell>
-                        <TableCell className="text-right">$250.00</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Olivia Smith</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            olivia@example.com
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          Refund
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="outline">
-                            Declined
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-06-24
-                        </TableCell>
-                        <TableCell className="text-right">$150.00</TableCell>
-                      </TableRow>
+                      {
+                        deptList.map((dept) => (
+                          <TableRow key={dept.id}>
+                            <TableCell>
+                              <div className="font-medium">{dept.name}</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                {dept.email}
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {dept.id}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="secondary">
+                                Fulfilled
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {dept.image}
+                            </TableCell>
+                            <TableCell className="text-right">{dept.id}</TableCell>
+                          </TableRow>
+                        ))
+                      }
                       <TableRow>
                         <TableCell>
                           <div className="font-medium">Emma Brown</div>
