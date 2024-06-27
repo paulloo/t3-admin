@@ -4,7 +4,7 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import {jwtHelper} from '~/lib/jwtHelper'
+import { AuthUser, jwtHelper, tokenOneDay, tokenOnWeek } from "~/lib/jwtHelper";
 import type { Provider } from "next-auth/providers/index";
 import { type Adapter } from "next-auth/adapters";
 import DiscordProvider from "next-auth/providers/discord";
@@ -12,12 +12,10 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-
 import { env } from "~/env";
 import { db } from "~/server/db";
 import { loginSchema } from "~/validation/auth";
 import { DelFlagEnum, StatusEnum } from "~/lib/enum";
-import { JWT } from "next-auth/jwt";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -63,55 +61,43 @@ declare module "next-auth" {
 const providers = [
   CredentialsProvider({
     name: "credentials",
-      credentials: {
-        username: {
-          label: "Username",
-          type: "text",
-          placeholder: "username",
+    credentials: {
+      username: {
+        label: "Username",
+        type: "text",
+        placeholder: "username",
+      },
+      password: { label: "Password", type: "password" },
+    },
+    authorize: async (credentials) => {
+      const cred = await loginSchema.parseAsync(credentials);
+
+      const user = await db.sys_user.findFirst({
+        where: {
+          user_name: cred.username,
+          password: cred.password,
         },
-        password: { label: "Password", type: "password" },
-      },
-      authorize: async (credentials) => {
-        const cred = await loginSchema.parseAsync(credentials);
+      });
 
-        const user = await db.sys_user.findFirst({
-          where: { 
-            user_name: cred.username,
-            password: cred.password
-          },
-        });
+      // 帐号或密码错误
+      if (!user) {
+        return null;
+      }
 
-        // 帐号或密码错误
-        if (!user) {
-          return null;
-        }
+      // 您已被禁用，如需正常使用请联系管理员
+      if (user.del_flag === DelFlagEnum.DELETE) {
+        return null;
+      }
 
-        // 您已被禁用，如需正常使用请联系管理员
-        if(user.del_flag === DelFlagEnum.DELETE) {
-          return null
-        }
-
-        // 您已被停用，如需正常使用请联系管理员
-        if(user.status === StatusEnum.STOP) {
-          return null
-        }
-          
-        // 创建一个新的对象，只包含用于生成 JWT 的数据
-        let jwtUser = {
-          user_id: user.user_id.toString(),
-          username: user.user_name,
-          // 添加其他需要的属性
-        };
-
-        const token = await jwtHelper.createAcessToken(jwtUser)
-
-        return {
-          id: user.user_id.toString(),
-          token: token,
-          name: user.user_name,
-          accessTokenExpires: new Date().getTime() + 60 * 60 * 1000,
-        };
-      },
+      // 您已被停用，如需正常使用请联系管理员
+      if (user.status === StatusEnum.STOP) {
+        return null;
+      }
+      return {
+        id: user.user_id.toString(),
+        name: user.user_name,
+      };
+    },
   }),
   env.DISCORD_CLIENT_ID &&
     env.DISCORD_CLIENT_SECRET &&
@@ -121,7 +107,7 @@ const providers = [
       allowDangerousEmailAccountLinking: true,
       httpOptions: {
         timeout: 10000,
-      }
+      },
     }),
   env.GITHUB_CLIENT_ID &&
     env.GITHUB_CLIENT_SECRET &&
@@ -131,7 +117,7 @@ const providers = [
       allowDangerousEmailAccountLinking: true,
       httpOptions: {
         timeout: 20000,
-      }
+      },
     }),
   env.GOOGLE_CLIENT_ID &&
     env.GOOGLE_CLIENT_SECRET &&
@@ -141,7 +127,7 @@ const providers = [
       allowDangerousEmailAccountLinking: true,
       httpOptions: {
         timeout: 10000,
-      }
+      },
     }),
   /**
    * ...add more authjs providers here
@@ -154,54 +140,93 @@ const providers = [
    */
 ].filter(Boolean) as Provider[];
 
+
+interface jwtUser {
+  user_id: string;
+  username: string;
+}
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  secret: env.JWT_SECRET,
   callbacks: {
-    
-    jwt: async ({ token, user, account, profile, isNewUser}) => {
-      if (user) {
-        token.id = user.id;
-        token.username = user.name;
+    async jwt({ token, user }) {
+      // credentials provider:  Save the access token and refresh token in the JWT on the initial login
+      if (user){
+        const authUser = {user_id: user.id, user_name: user.name} as AuthUser;
+
+        const accessToken = await jwtHelper.createAcessToken(authUser);
+        const refreshToken = await jwtHelper.createRefreshToken(authUser);
+        const accessTokenExpired = Date.now() /1000 + tokenOneDay;
+        const refreshTokenExpired = Date.now() /1000 + tokenOnWeek;
+
+        return {
+          ...token, accessToken, refreshToken, accessTokenExpired, refreshTokenExpired,
+          user: authUser
+        }
+
+      } else {
+        if (token){
+          // In subsequent requests, check access token has expired, try to refresh it
+          if (Date.now() /1000 > token.accessTokenExpired){
+            const verifyToken = await jwtHelper.verifyToken(token.refreshToken);
+
+            if (verifyToken){
+
+              const user = await prisma.user.findFirst({
+                where: {
+                  name: token.user.user_name
+                }
+              });
+
+              if (user){
+                const accessToken = await jwtHelper.createAcessToken(token.user);
+                const accessTokenExpired = Date.now() /1000 + tokenOneDay;
+
+                return {...token, accessToken, accessTokenExpired}
+              } 
+            }
+
+            return {...token, error: "RefreshAccessTokenError"}
+          }
+        }
       }
-      // on subsequent calls, token is provided and we need to check if it's expired
-      // if (token?.accessTokenExpires) {
-      //   if (Date.now() / 1000 < token?.accessTokenExpires) return { ...token, ...user };
-      // } else if (token?.refreshToken) {
-        
-      //   // 创建一个新的对象，只包含用于生成 JWT 的数据
-      //   let jwtUser = {
-      //     user_id: user.id.toString(),
-      //     username: user.name,
-      //     // 添加其他需要的属性
-      //   };
-      //   return jwtHelper.createRefreshToken(jwtUser);
-      // }
 
-
-      return token;
+      return token
     },
-    session: ({ session, user }) => {
-      if (user && session.user) {
-        session.user.id = user.id as string;
+    session: ({ session, token, user }) => {
+      if (token){
+        session.user = {
+          name: token.user.user_name,
+          userId: token.user.user_id
+        }
+        session.error = token?.error;
       }
-      return {
-        ...session,
-        user: {
-          ...session.user,
+
+      if(user) {
+        session.user = {
           id: user.id,
-        },
+          name: user.name,
+        };
       }
+
+      return session
     },
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: providers,
-  pages: {
-    signIn: '/signin', // 这是你自定义的登录页面的路径
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60
   },
+  pages: {
+    signIn: "/signin", // 这是你自定义的登录页面的路径
+    error: '/',
+  },
+  debug: env.NODE_ENV === "development",
 };
 
 /**

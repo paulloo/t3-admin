@@ -6,12 +6,11 @@ import GoogleSignInButton from '~/app/components/GoogleSignInButton'
 import TextField from '~/app/components/TextField'
 import GithubSignInButton from "../components/GithubSignInButton"
 import { Form } from "../components/Form"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import { SubmitButton } from "../components/submit-button"
 import { useRef } from "react";
 
 const SignInPage = () => {
-
   const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(e: any) {
@@ -19,9 +18,11 @@ const SignInPage = () => {
     if(formRef?.current) {
       const formData = new FormData(formRef?.current);
       signIn('credentials', {
-        redirectTo: '/',
+        callbackUrl: '/',
+        redirect: true,
         username: formData.get('username') as string,
         password: formData.get('password') as string,
+        
       })
     }
   }
@@ -48,6 +49,8 @@ const SignInPage = () => {
             {' for free.'}
           </p>
         </Form>
+        <GoogleSignInButton />
+        <GithubSignInButton />
       </div>
     </div>
   )

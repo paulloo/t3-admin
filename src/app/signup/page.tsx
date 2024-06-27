@@ -3,30 +3,10 @@
 import Link from 'next/link';
 import { Form } from '~/app/components/Form';
 import { redirect } from 'next/navigation';
-import { api } from "~/trpc/server";
 import { SubmitButton } from '~/app/components/submit-button';
 import { useRef } from 'react';
 
 export default async function SignupPage() {
-    
-//     const getUser = await api.dept.getlist().catch((err) => {
-//         console.error(err);
-//         return [];
-//     })
-
-//   const createUser = await api.dept.create({
-//     parentId: 1,
-//     deptName: 'test',
-//     orderNum: 1,
-//     leader: 'test',
-//     phone: 'test',
-//     status: 'test',
-//   }).catch((err) => {
-//     console.error(err);
-//     return [];
-//   })
-
-  
 
   async function register(e: any) {
     
@@ -35,28 +15,8 @@ export default async function SignupPage() {
       const formData = new FormData(formRef?.current);
       let username = formData.get('email') as string;
       let password = formData.get('password') as string;
-      let user = await api.dept.getlist().catch((err) => {
-          console.error(err);
-          return [];
-      })
-  
-      if (user.length > 0) {
-        return 'User already exists'; // TODO: Handle errors with useFormStatus
-      } else {
-        await api.dept.create({
-          parentId: 1,
-          deptName: 'test',
-          orderNum: 1,
-          leader: 'test',
-          phone: 'test',
-          status: 'test',
-        }).catch((err) => {
-          console.error(err);
-          return [];
-        })
-      ;
+     
         redirect('/signin');
-      }
     }
   }
 

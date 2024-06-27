@@ -4,7 +4,7 @@ import { sys_user } from "@prisma/client";
 
 interface jwtUser {
   user_id: string;
-  username: string;
+  user_name: string;
 }
 
 export interface AuthUser extends Omit<jwtUser, "password">{}
