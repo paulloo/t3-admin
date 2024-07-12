@@ -99,10 +99,15 @@ export enum CacheEnum {
     /**
      * 正常
      */
-    NORMAL = '0',
+    NORMAL = 0,
     /**
      * 停用
      */
-    STOP = '1',
+    STOP = 1,
+  }
+  
+  export enum UserStatus {
+    Disable = 0,
+    Enabled = 1,
   }
   

@@ -12,10 +12,11 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import { env } from "~/env";
+import { env } from "~/env.mjs";
 import { db } from "~/server/db";
 import { loginSchema } from "~/validation/auth";
-import { DelFlagEnum, StatusEnum } from "~/lib/enum";
+import { DelFlagEnum, StatusEnum, UserStatus } from "~/lib/enum";
+import { md5 } from "~/lib/utils";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -74,8 +75,8 @@ const providers = [
 
       const user = await db.sys_user.findFirst({
         where: {
-          user_name: cred.username,
-          password: cred.password,
+          username: cred.username,
+          status: UserStatus.Enabled,
         },
       });
 
@@ -83,19 +84,21 @@ const providers = [
       if (!user) {
         return null;
       }
+      const comparePassword = md5(`${cred.password}${user.psalt}`)
 
-      // 您已被禁用，如需正常使用请联系管理员
-      if (user.del_flag === DelFlagEnum.DELETE) {
+      if (user.password !== comparePassword) {
         return null;
       }
 
-      // 您已被停用，如需正常使用请联系管理员
-      if (user.status === StatusEnum.STOP) {
-        return null;
-      }
+      const role = db.sys_role.findFirst({
+        where: {
+          id: user.id,
+        }
+      })
+
       return {
-        id: user.user_id.toString(),
-        name: user.user_name,
+        id: user.id.toString(),
+        name: user.username,
       };
     },
   }),
@@ -142,7 +145,7 @@ const providers = [
 
 
 interface jwtUser {
-  user_id: string;
+  id: string;
   username: string;
 }
 /**
@@ -156,7 +159,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       // credentials provider:  Save the access token and refresh token in the JWT on the initial login
       if (user){
-        const authUser = {user_id: user.id, user_name: user.name} as AuthUser;
+        const authUser = {id: user.id, username: user.name} as AuthUser;
 
         const accessToken = await jwtHelper.createAcessToken(authUser);
         const refreshToken = await jwtHelper.createRefreshToken(authUser);
@@ -176,9 +179,9 @@ export const authOptions: NextAuthOptions = {
 
             if (verifyToken){
 
-              const user = await prisma.user.findFirst({
+              const user = await db.user.findFirst({
                 where: {
-                  name: token.user.user_name
+                  name: token.user.username
                 }
               });
 
@@ -200,8 +203,8 @@ export const authOptions: NextAuthOptions = {
     session: ({ session, token, user }) => {
       if (token){
         session.user = {
-          name: token.user.user_name,
-          userId: token.user.user_id
+          name: token.user.username,
+          id: token.user.id
         }
         session.error = token?.error;
       }
