@@ -1,14 +1,54 @@
 // import { getServerAuthSession } from "~/utils/auth/users";
-import { api } from "~/core/trpc/infer";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { authOptions } from "~/core/auth/authjs";
+import { getServerSession } from "next-auth";
+import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { GeneralShell } from "~/islands/wrappers/general-shell";
+import { siteConfig } from "~/app";
+import { api } from "~/core/trpc";
 
-export default async function Dashboard() {
-  // const hello = await api.post.hello.query({ text: "from tRPC" });
+import { SiteFooter } from "~/islands/navigation/site-footer";
+import { SiteHeader } from "~/islands/navigation/site-header";
+import { getServerAuthSession, getUserData } from "~/utils/auth/users";
+
+export async function generateMetadata({ params }) {
+  const t = await getTranslations();
+  const metadata: Metadata = {
+    title: `${t("metadata.title.home")} – ${siteConfig.name}`,
+  };
+  return metadata;
+}
+
+
+async function TestCom() {
+  const session = await getServerAuthSession();
+  return (<div className="flex flex-col items-center justify-center gap-4">
+    <p className="text-center text-2xl text-white">
+      {session && <span>Logged in as {session.user?.name}</span>}
+    </p>
+    <Link
+      href={session ? "/api/auth/signout" : "/api/auth/signin"}
+      className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+    >
+      {session ? "Sign out" : "Sign in"}
+    </Link>
+  </div>)
+}
+
+export default function HomePage() {
   
+  // const session = await getServerSession(authOptions);
+  // const hello = await api.post.hello.query({ text: "from tRPC" });
+  // const {  data: deptList, isLoading } = api.dept.getList.useQuery()
+  // console.log("deptList: ", deptList);
   const deptList = []
-  console.log("deptList: ", deptList);
+  const t = useTranslations();
 
-  return (
+  return (<>
+  <SiteHeader />
+    <GeneralShell>
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
@@ -21,7 +61,7 @@ export default async function Dashboard() {
               href="https://create.t3.gg/en/usage/first-steps"
               target="_blank"
             >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
+              <h3 className="text-2xl font-bold">First Steps {t("landing.main-cta")} →</h3>
               <div className="text-lg">
                 Just the basics - Everything you need to know to set up your
                 database and authentication.
@@ -44,23 +84,16 @@ export default async function Dashboard() {
               {hello ? hello.greeting : "Loading tRPC query..."}
             </p> */}
 
-            {/* <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-center text-2xl text-white">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
-              </Link>
-            </div> */}
+            <TestCom />
           </div>
 
           {/* <CrudShowcase /> */}
         </div>
       </main>
     </div>
+    </GeneralShell>
+    <SiteFooter />
+    </>
   );
 }
 

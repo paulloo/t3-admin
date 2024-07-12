@@ -19,6 +19,7 @@ export async function getServerAuthSession() {
 
   if (authProvider === "authjs") {
     const session = await getServerSession(authOptions);
+    console.log('getServerSession res: ', session)
     return session?.user;
   } else if (authProvider === "clerk") {
     // const session = await clerkClient.users.getUser(userId);

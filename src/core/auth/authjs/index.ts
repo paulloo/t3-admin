@@ -11,14 +11,21 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
+import { type Adapter } from "next-auth/adapters";
 import DiscordProvider from "next-auth/providers/discord";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import type { Provider } from "next-auth/providers/index";
 import { getLocale } from "next-intl/server";
+import CredentialsProvider from "next-auth/providers/credentials";
+
 
 import { db } from "~/data/db";
 import { env } from "~/env.mjs";
+import { AuthUser, jwtHelper, tokenOneDay, tokenOnWeek } from "~/lib/jwtHelper";
+import { loginSchema } from "~/validation/auth";
+import { UserStatus } from "~/lib/enum";
+import { md5 } from "~/lib/utils";
 
 
 /**
@@ -69,6 +76,48 @@ declare module "next-auth" {
  * @see https://authjs.dev/reference/core/adapters#linkaccount
  */
 const providers = [
+  CredentialsProvider({
+    name: "credentials",
+    credentials: {
+      username: {
+        label: "Username",
+        type: "text",
+        placeholder: "username",
+      },
+      password: { label: "Password", type: "password" },
+    },
+    authorize: async (credentials) => {
+      const cred = await loginSchema.parseAsync(credentials);
+
+      const user = await db.sys_user.findFirst({
+        where: {
+          username: cred.username,
+          status: UserStatus.Enabled,
+        },
+      });
+      console.log('authorize user: ', user)
+      // 帐号或密码错误
+      if (!user) {
+        return null;
+      }
+      const comparePassword = md5(`${cred.password}${user.psalt}`)
+
+      if (user.password !== comparePassword) {
+        return null;
+      }
+
+      const role = db.sys_role.findFirst({
+        where: {
+          id: user.id,
+        }
+      })
+
+      return {
+        id: user.id.toString(),
+        name: user.username,
+      };
+    },
+  }),
   env.DISCORD_CLIENT_ID &&
     env.DISCORD_CLIENT_SECRET &&
     DiscordProvider({
@@ -110,21 +159,90 @@ const providers = [
  * @see https://next-auth.js.org/configuration/callbacks
  */
 export const authOptions: NextAuthOptions = {
-  // @ts-expect-error strange error drizzle
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db) as Adapter,
   secret: env.NEXTAUTH_SECRET,
+  jwt: {
+    secret: env.JWT_SECRET,
+    maxAge: tokenOneDay,
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: tokenOneDay
+  },
   providers,
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: { ...session.user, id: user.id },
-    }),
+
+    async jwt({ token, user }) {
+      // credentials provider:  Save the access token and refresh token in the JWT on the initial login
+      if (user){
+        const authUser = {id: user.id, username: user.name} as AuthUser;
+
+        const accessToken = await jwtHelper.createAcessToken(authUser);
+        const refreshToken = await jwtHelper.createRefreshToken(authUser);
+        const accessTokenExpired = Date.now() /1000 + tokenOneDay;
+        const refreshTokenExpired = Date.now() /1000 + tokenOnWeek;
+
+        return {
+          ...token, accessToken, refreshToken, accessTokenExpired, refreshTokenExpired,
+          user: authUser
+        }
+
+      } else {
+        if (token){
+          // In subsequent requests, check access token has expired, try to refresh it
+          if (Date.now() /1000 > token.accessTokenExpired){
+            const verifyToken = await jwtHelper.verifyToken(token.refreshToken);
+
+            if (verifyToken){
+
+              const user = await db.user.findFirst({
+                where: {
+                  name: token.user.username
+                }
+              });
+
+              if (user){
+                const accessToken = await jwtHelper.createAcessToken(token.user);
+                const accessTokenExpired = Date.now() /1000 + tokenOneDay;
+
+                return {...token, accessToken, accessTokenExpired}
+              } 
+            }
+
+            return {...token, error: "RefreshAccessTokenError"}
+          }
+        }
+      }
+      console.log('auth token: ', token, user)
+      return token
+    },
+    session: ({ session, token, user  }) => {
+      console.log('auth session: ', session, user)
+      if (token){
+        session.user = {
+          name: token.user.username,
+          id: token.user.id
+        }
+        session.error = token?.error;
+      }
+
+      if(user) {
+        session.user = {
+          id: user.id,
+          name: user.name,
+        };
+      }
+
+      console.log('auth session: ', session, user)
+      return session
+    },
   },
   pages: {
     newUser: "/auth",
     signIn: "/sign-in",
     signOut: "/sign-out",
   },
+  debug: env.NODE_ENV === "development",
 };
 
 /**

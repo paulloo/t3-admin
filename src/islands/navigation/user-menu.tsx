@@ -18,7 +18,7 @@ import { getServerAuthSession, getUserData } from "~/utils/auth/users";
 export default async function UserMenu() {
   const session = await getServerAuthSession();
   const data = await getUserData(session);
-
+  console.log("data: ", data, session)
   const username = data.username;
   const image = data.image;
   const initials = data.initials;

@@ -1,6 +1,6 @@
 import "flag-icons/css/flag-icons.min.css";
 
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import { DiscordLogoIcon } from "@radix-ui/react-icons";
 import LocalizationMainSwitcher from "~/localization-main";
 import { Github } from "lucide-react";
@@ -11,7 +11,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 import { settings, siteConfig } from "~/app";
 import { Link as ButtonLink } from "~/core/link";
 import { env } from "~/env.mjs";
-import { CartSheet } from "~/islands/checkout/cart-sheet";
+// import { CartSheet } from "~/islands/checkout/cart-sheet";
 import { Combobox } from "~/islands/navigation/combobox";
 import { MainMenu } from "~/islands/navigation/main-menu";
 import { MobileMenu } from "~/islands/navigation/mobile-menu";
@@ -71,7 +71,7 @@ export async function SiteHeader({
         />
 
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <CartSheet />
+          {/* <CartSheet /> */}
 
           <Combobox
             tSearchTitle={t("islands.search.title")}
@@ -122,7 +122,7 @@ export async function SiteHeader({
                 tNextAuthError={t("environments.auth-button-placeholder")}
               />
             )
-          ) : (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) ||
+          ) : env.NEXTAUTH_SECRET || (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) ||
             (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) ||
             (env.DISCORD_CLIENT_ID && env.DISCORD_CLIENT_SECRET) ? (
             <UserMenu />

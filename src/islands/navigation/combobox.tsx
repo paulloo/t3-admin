@@ -21,7 +21,7 @@ import {
   CommandSeparator,
 } from "~/islands/primitives/command";
 import { Skeleton } from "~/islands/primitives/skeleton";
-import { filterProductsAction } from "~/server/actions/product";
+// import { filterProductsAction } from "~/server/actions/product";
 import { navItems } from "~/server/links";
 
 type RouteHref = never;
@@ -59,8 +59,8 @@ export function Combobox({
 
     if (debouncedQuery.length > 0) {
       startTransition(async () => {
-        const data = await filterProductsAction(debouncedQuery);
-        setData(data);
+        // const data = await filterProductsAction(debouncedQuery);
+        // setData(data);
       });
     }
   }, [debouncedQuery]);

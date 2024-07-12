@@ -8,7 +8,7 @@
  * @see https://github.com/steven-tey/dub/blob/main/packages/utils/src/index.ts
  */
 
-import { isClerkAPIResponseError } from "@clerk/nextjs";
+import { isClerkAPIResponseError } from "@clerk/nextjs/errors";
 import { type CartLineItem } from "~/types";
 import { clsx, type ClassValue } from "clsx";
 import dayjs from "dayjs";

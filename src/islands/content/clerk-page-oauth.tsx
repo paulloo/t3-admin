@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { isClerkAPIResponseError, useSignIn } from "@clerk/nextjs";
+import { useSignIn } from "@clerk/nextjs";
+import { isClerkAPIResponseError } from '@clerk/nextjs/errors'
 import { type OAuthStrategy } from "@clerk/types";
 import { toast } from "react-hot-toast";
 

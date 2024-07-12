@@ -30,6 +30,8 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url()
     ),
+    ADDITIONAL_CSP_ORIGINS: z.string().optional(),
+    CHECK_BOT_ACTIVITY: z.string().optional(),
     CLERK_SECRET_KEY: z.string().optional(),
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_CLIENT_SECRET: z.string(),
@@ -40,6 +42,14 @@ export const env = createEnv({
     LOGLIB_SITE_ID: z.string().optional(),
     STRIPE_ENTERPRISE_SUBSCRIPTION_PRICE_ID: z.string().optional(),
     STRIPE_PROFESSIONAL_SUBSCRIPTION_PRICE_ID: z.string().optional(),
+    STRIPE_SECRET_KEY: z.string().optional(),
+    STRIPE_WEBHOOK_SIGNING_SECRET: z.string().optional(),
+    UPLOADTHING_APP_ID: z.string().optional(),
+    UPLOADTHING_SECRET: z.string().optional(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+    UPSTASH_REDIS_REST_URL: z.string().optional(),
+    EMAIL_FROM_ADDRESS: z.string().optional(),
+    RESEND_API_KEY: z.string().optional(),
   },
 
   /**
@@ -70,11 +80,13 @@ export const env = createEnv({
   runtimeEnv: {
     PORT: process.env.PORT,
     VERCEL_URL: process.env.VERCEL_URL,
+    ADDITIONAL_CSP_ORIGINS: process.env.ADDITIONAL_CSP_ORIGINS,
     JWT_SECRET: process.env.JWT_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    CHECK_BOT_ACTIVITY: process.env.CHECK_BOT_ACTIVITY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
@@ -103,6 +115,16 @@ export const env = createEnv({
       process.env.STRIPE_ENTERPRISE_SUBSCRIPTION_PRICE_ID,
     STRIPE_PROFESSIONAL_SUBSCRIPTION_PRICE_ID:
       process.env.STRIPE_PROFESSIONAL_SUBSCRIPTION_PRICE_ID,
+    
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SIGNING_SECRET: process.env.STRIPE_WEBHOOK_SIGNING_SECRET,
+
+    UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
+    UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    EMAIL_FROM_ADDRESS: process.env.EMAIL_FROM_ADDRESS,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

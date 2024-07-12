@@ -7,13 +7,13 @@ import type {
   import superjson from "superjson";
   
   import { createContext } from "~/core/trpc/context";
-  import { userRouter } from "~/core/trpc/routers/auth2";
-  import { todosRouter } from "~/core/trpc/routers/todo2";
+  // import { userRouter } from "~/core/trpc/routers/auth2";
+  // import { todosRouter } from "~/core/trpc/routers/todo2";
   import { router } from "~/core/trpc/trpc2";
   
   export const appRouter = router({
-    user: userRouter,
-    todos: todosRouter,
+    // user: userRouter,
+    // todos: todosRouter,
   });
   
   export type AppRouter = typeof appRouter;
