@@ -173,6 +173,9 @@ importers:
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      next-usequerystate:
+        specifier: ^1.17.4
+        version: 1.17.4(next@14.2.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
       radash:
         specifier: ^12.1.0
         version: 12.1.0
@@ -2509,6 +2512,9 @@ packages:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
 
+  mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
@@ -2564,6 +2570,11 @@ packages:
     peerDependencies:
       react: ^16.8 || ^17 || ^18
       react-dom: ^16.8 || ^17 || ^18
+
+  next-usequerystate@1.17.4:
+    resolution: {integrity: sha512-d+X6k9tppgVGm+ZWlEqIBnQbXHQ3tNo5ZkQw6ouxtftVpCOiKXMpozcR4UZU9Ck64W2Mhb8wqWIlzrxqjvE3ww==}
+    peerDependencies:
+      next: '>=13.4 <14.0.2 || ^14.0.3'
 
   next@14.2.3:
     resolution: {integrity: sha512-dowFkFTR8v79NPJO4QsBUtxv0g9BrS/phluVpMAt2ku7H+cbcBJlopXjkWlwxrk/xGqMemr7JkGPGemPrLLX7A==}
@@ -6026,6 +6037,8 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
+  mitt@3.0.1: {}
+
   mkdirp@1.0.4: {}
 
   ms@2.1.2: {}
@@ -6079,6 +6092,11 @@ snapshots:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+
+  next-usequerystate@1.17.4(next@14.2.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)):
+    dependencies:
+      mitt: 3.0.1
+      next: 14.2.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
   next@14.2.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:

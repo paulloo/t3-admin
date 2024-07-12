@@ -1,13 +1,15 @@
+'use client'
+
 import React from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/router";
-
+import { Form } from "~/app/components/Form"
+import { useRef } from "react";
+import { SubmitButton } from "~/app/components/submit-button"
 import type { ILogin } from "~/validation/auth";
-
+import Link from 'next/link';
 const LoginForm = () => {
-  const router = useRouter();
-  const { error } = router.query;
+  const formRef = useRef<HTMLFormElement>(null);
 
   const {
     register,
@@ -20,29 +22,19 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="radius flex flex-col items-center gap-2 border p-4">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-        {error && (
-          <p className="text-center text-red-600">Login failed, try again!</p>
-        )}
-        <label>Email</label>
-        <input
-          className="rounded border py-1 px-4"
-          type="text"
-          {...register("email", { required: true })}
-        />
-        {errors.email && <span>This field is required</span>}
-        <label>Password</label>
-        <input
-          className="rounded border py-1 px-4"
-          type="password"
-          {...register("password", { required: true })}
-        />
-        {errors.password && <span>This field is required</span>}
-
-        <input type="submit" className="rounded border py-1 px-4" />
-      </form>
-    </div>
+    <Form
+    formref={formRef}
+    submit={handleSubmit}
+  >
+    <SubmitButton>Sign in</SubmitButton>
+    <p className="text-center text-sm text-gray-600">
+      {"Don't have an account? "}
+      <Link href="/signup" className="font-semibold text-gray-800">
+        Sign up
+      </Link>
+      {' for free.'}
+    </p>
+  </Form>
   );
 };
 
