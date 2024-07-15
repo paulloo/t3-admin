@@ -1,11 +1,3 @@
-"use client";
-
-import Link from "next/link";
-import { Form } from "~/app/components/Form";
-import { redirect } from "next/navigation";
-import { SubmitButton } from "~/app/components/submit-button";
-import { useEffect, useRef, useState } from "react";
-
 import {
   Table,
   TableBody,
@@ -17,14 +9,33 @@ import {
   TableRow,
 } from "~/islands/primitives/table";
 
-import { api } from "~/core/trpc/infer";
+import { api } from "~/core/trpc/server";
+import { Shell } from "~/islands/wrappers/shell-variants";
+import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "~/islands/navigation/page-header";
+import { Metadata } from "next";
+import { fullURL } from "~/data/meta/builder";
+import { isEmpty } from "radash";
 
-export default function SystemRolePage() {
-  const { data: roleList, isLoading, error } = api.role.getList.useQuery();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  return (
+// export const metadata = seo({
+  export const metadata: Metadata = {
+    metadataBase: fullURL(),
+    title: "system user",
+    description: "Manage your website and account preferences.",
+  };
+  
+
+export default async function SystemRolePage() {
+  const roleList = await api.role.getList();
+  console.log('roleList:', roleList)
+
+  return (<Shell variant="sidebar">
+    <PageHeader id="account-header" aria-labelledby="account-header-heading">
+        <PageHeaderHeading size="sm">Settings</PageHeaderHeading>
+        <PageHeaderDescription size="sm">
+          Manage your website and account preferences.
+        </PageHeaderDescription>
+      </PageHeader>
     <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
       <Table>
         <TableCaption>A list of your recent invoices.</TableCaption>
@@ -66,5 +77,6 @@ export default function SystemRolePage() {
         </TableFooter>
       </Table>
     </div>
+    </Shell>
   );
 }

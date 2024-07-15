@@ -1,12 +1,4 @@
-import Link from "next/link";
-import { Form } from "~/app/components/Form";
-import { redirect } from "next/navigation";
-import { SubmitButton } from "~/app/components/submit-button";
-import { useEffect, useRef, useState } from "react";
-
 import type { Metadata } from "next";
-
-
 import { Shell } from "~/islands/wrappers/shell-variants";
 import { fullURL } from "~/data/meta/builder";
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "~/islands/navigation/page-header";

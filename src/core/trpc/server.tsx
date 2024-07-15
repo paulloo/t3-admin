@@ -10,6 +10,7 @@ import type {
   // import { userRouter } from "~/core/trpc/routers/auth2";
   // import { todosRouter } from "~/core/trpc/routers/todo2";
   import { router } from "~/core/trpc/trpc2";
+import { createCaller } from "~/core/trpc/root";
   
   export const appRouter = router({
     // user: userRouter,
@@ -36,6 +37,8 @@ import type {
     appRouter.createCaller(await createContext(session));
   
   export type ServerClient = inferAsyncReturnType<typeof createServerClient>;
+
+  export const api = createCaller(createContext)
   
   /**
    * @see https://github.com/jherr/trpc-on-the-app-router/issues/3
