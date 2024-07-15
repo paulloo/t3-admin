@@ -1,7 +1,4 @@
 
-import GoogleSignInButton from '~/app/components/GoogleSignInButton'
-import GithubSignInButton from "~/app/components/GithubSignInButton"
-
 import { getProviders, signIn, useSession } from "next-auth/react"
 
 import { fullURL } from '~/data/meta/builder';
@@ -42,20 +39,6 @@ export default async function SignInPage() {
       return redirect("/");
     }
     if (user?.id) return redirect("/auth");
-  }
-
-  async function handleSubmit(e: any) {
-    e.preventDefault();
-    if(formRef?.current) {
-      const formData = new FormData(formRef?.current);
-      signIn('credentials', {
-        callbackUrl: '/',
-        redirect: true,
-        username: formData.get('username') as string,
-        password: formData.get('password') as string,
-        
-      })
-    }
   }
 
   return (

@@ -1,34 +1,28 @@
-"use client";
-
-import Link from "next/link";
-import { Form } from "~/app/components/Form";
-import { redirect } from "next/navigation";
-import { SubmitButton } from "~/app/components/submit-button";
-import { useEffect, useRef, useState } from "react";
+'use client';
 
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/islands/primitives/table";
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "~/islands/primitives/table";
+import { api } from "~/core/trpc/infer";
+// import { api } from "~/core/trpc/server2";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/islands/primitives/ui/avatar";
 
-import { api } from "~/core/trpc/infer";
+export default function UserListCtx() {
 
-export default function SystemUserPage() {
-  const { data: userList, isLoading, error } = api.user.getList.useQuery();
+  const data = api.user.getList.useQuery();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  console.log(data);
+
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
-      <Table>
+    <Table>
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
           <TableRow>
@@ -47,7 +41,7 @@ export default function SystemUserPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {userList?.map((user) => (
+          {data?.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.id}</TableCell>
               <TableCell>
@@ -82,6 +76,5 @@ export default function SystemUserPage() {
           </TableRow>
         </TableFooter>
       </Table>
-    </div>
   );
 }

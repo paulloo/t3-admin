@@ -130,6 +130,12 @@ export const siteConfig = {
       title: "Lobby",
       items: [
         {
+          title: "SystemUser",
+          href: "/system/user",
+          description: "system user management.",
+          items: [],
+        },
+        {
           title: "Products",
           href: "/products",
           description: "All the products we have to offer.",

@@ -19,19 +19,29 @@ const getBaseUrl = () => {
   return `http://localhost:${env.PORT ?? 3000}`; // dev mode SSR should use localhost
 };
 
+const createQueryClient = () => new QueryClient({
+  defaultOptions: {
+    queries: {
+      // With SSR, we usually want to set some default staleTime
+      // above 0 to avoid refetching immediately on the client
+      staleTime: 60 * 1000,
+    },
+  },
+});
+
+let clientQueryClientSingleton: QueryClient | undefined = undefined
+
+const getQueryClient = () => {
+  if(typeof window === 'undefined') {
+    return createQueryClient();
+  }
+
+  // BBrowser: use singleton pattern to keep the same query client
+  return (clientQueryClientSingleton ??= createQueryClient());
+}
+
 export function TRPC(props: { children: React.ReactNode; data: Headers }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            // With SSR, we usually want to set some default staleTime
-            // above 0 to avoid refetching immediately on the client
-            staleTime: 60 * 1000,
-          },
-        },
-      }),
-  );
+  const queryClient = getQueryClient();
 
   const [trpcClient] = useState(() =>
     api.createClient({
