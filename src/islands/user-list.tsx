@@ -10,14 +10,14 @@ import {
     TableHeader,
     TableRow,
   } from "~/islands/primitives/table";
-import { api } from "~/core/trpc/infer";
-// import { api } from "~/core/trpc/server2";
+// import { api } from "~/core/trpc/infer";
+import { api } from "~/core/trpc/server2";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/islands/primitives/ui/avatar";
 
 export default function UserListCtx() {
 
-  const data = api.user.getList.useQuery();
+  const data = api.user.getList();
 
   console.log(data);
 
