@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { Button } from "~/components/ui/button"
+import { Button } from "~/islands/primitives/button"
 import {
     Github
 } from "lucide-react"

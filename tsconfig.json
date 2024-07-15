@@ -30,13 +30,23 @@
     }
   },
   "include": [
+   "eslint.config.ts",
     ".eslintrc.cjs",
     "next-env.d.ts",
+    "**/*.cjs",
+    "**/*.cjs",
+    "**/*.mjs",
+    "**/*.mjs",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.cjs",
-    "**/*.js",
-    ".next/types/**/*.ts"
+    "**/*.d.ts",
+    "**/*.test.ts",
+    "jest.config.js",
+    ".storybook/**/*.ts",
+    ".next/types/**/*.ts",
+    ".tokenami/tokenami.env.d.ts",
+    ".tokenami/tokenami.env.ci.d.ts",
+    "src/tests/ava/swc/tests/ava/**/*.js"
   ],
   "exclude": ["node_modules"]
 }

@@ -3,7 +3,7 @@ import { sys_user } from "@prisma/client";
 
 
 interface jwtUser {
-  user_id: string;
+  id: string;
   username: string;
 }
 
