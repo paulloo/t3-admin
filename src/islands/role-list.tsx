@@ -41,13 +41,8 @@ import {
 
 export type User = {
   id: string;
-  avatar: string;
-  username: string;
-  nickname: string;
-  sys_dept: string;
-  sys_role: string;
-  email: string;
-  phone: string;
+  name: string;
+  value: string;
   remark: string;
   status: string;
   created_at: string;
@@ -82,73 +77,17 @@ export const columns: ColumnDef<User>[] = [
     header: "序号",
     cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
   },
+  
   {
-    accessorKey: "avatar",
-    header: "头像",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        <Avatar>
-          {row.getValue("avatar") && (
-            <AvatarImage src={row.getValue("avatar")} alt="@shadcn" />
-          )}
-        </Avatar>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "username",
-    header: "用户名",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("username")}</div>
-    ),
-  },
-  {
-    accessorKey: "nickname",
-    header: "昵称",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("nickname")}</div>
-    ),
-  },
-  {
-    accessorKey: "sys_dept",
-    header: "所在部门",
-    cell: ({ row }) => {
-      const sysDept = row.original || {};
-
-      return <div className="capitalize">{sysDept.sys_dept?.name}</div>;
-    },
-  },
-  {
-    accessorKey: "sys_role",
-    header: "所属角色",
-    cell: ({ row }) => {
-      return row.original.sys_user_roles.map((role) => {
-        return <Badge>{role.sys_role.name}</Badge>;
-      });
-    },
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    accessorKey: "name",
+    header: "角色名称",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
 
   {
-    accessorKey: "phone",
-    header: "手机",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("phone")}</div>
-    ),
+    accessorKey: "value",
+    header: "角色值",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("value")}</div>,
   },
   {
     accessorKey: "remark",
@@ -239,7 +178,7 @@ import {
 } from "~/islands/primitives/ui/avatar";
 import { Badge } from "./primitives/badge";
 
-export default function UserListCtx({ users }) {
+export default function RoleListCtx({ roles }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -249,7 +188,7 @@ export default function UserListCtx({ users }) {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data: users,
+    data: roles,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

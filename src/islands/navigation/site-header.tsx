@@ -90,7 +90,7 @@ export async function SiteHeader({
               size="icon"
               target="_blank"
               variant="outline"
-              href="https://github.com/blefnk/relivator"
+              href="https://github.com/paulloo/t3-admin"
             >
               <Github className="h-4 w-4" />
             </ButtonLink>
@@ -98,7 +98,7 @@ export async function SiteHeader({
               size="icon"
               target="_blank"
               variant="outline"
-              href="https://discord.gg/TK2SpfXfTB"
+              href="https://discord.com/invite/wCA2CUHRPB"
             >
               <DiscordLogoIcon className="h-4 w-4" />
             </ButtonLink>

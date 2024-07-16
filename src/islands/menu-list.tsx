@@ -41,17 +41,27 @@ import {
 
 export type User = {
   id: string;
-  avatar: string;
-  username: string;
-  nickname: string;
-  sys_dept: string;
-  sys_role: string;
-  email: string;
-  phone: string;
+  name: string;
+  value: string;
   remark: string;
   status: string;
   created_at: string;
   updated_at: string;
+};
+/**
+ * 将对应菜单类型转为字符串字意
+ */
+const getMenuType = (type: number) => {
+  switch (type) {
+    case 0:
+      return <Badge variant="default">目录</Badge>;
+    case 1:
+      return <Badge variant="outline">菜单</Badge>;
+    case 2:
+      return <Badge variant="destructive">权限</Badge>;
+    default:
+      return '';
+  }
 };
 
 export const columns: ColumnDef<User>[] = [
@@ -82,81 +92,73 @@ export const columns: ColumnDef<User>[] = [
     header: "序号",
     cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
   },
+  
   {
-    accessorKey: "avatar",
-    header: "头像",
+    accessorKey: "name",
+    header: "名称",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+  },
+
+  {
+    accessorKey: "icon",
+    header: "图标",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("icon")}</div>,
+  },
+  {
+    accessorKey: "type",
+    header: "类型",
     cell: ({ row }) => (
       <div className="capitalize">
-        <Avatar>
-          {row.getValue("avatar") && (
-            <AvatarImage src={row.getValue("avatar")} alt="@shadcn" />
-          )}
-        </Avatar>
+        {
+          getMenuType(row.getValue("type"))
+        }
       </div>
     ),
   },
   {
-    accessorKey: "username",
-    header: "用户名",
+    accessorKey: "path",
+    header: "节点路由",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("username")}</div>
+      <div className="capitalize">{row.getValue("path")}</div>
     ),
   },
   {
-    accessorKey: "nickname",
-    header: "昵称",
+    accessorKey: "component",
+    header: "文件路径",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("nickname")}</div>
+      <div className="capitalize">{row.getValue("component")}</div>
     ),
   },
   {
-    accessorKey: "sys_dept",
-    header: "所在部门",
-    cell: ({ row }) => {
-      const sysDept = row.original || {};
-
-      return <div className="capitalize">{sysDept.sys_dept?.name}</div>;
-    },
-  },
-  {
-    accessorKey: "sys_role",
-    header: "所属角色",
-    cell: ({ row }) => {
-      return row.original.sys_user_roles.map((role) => {
-        return <Badge>{role.sys_role.name}</Badge>;
-      });
-    },
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    accessorKey: "permission",
+    header: "权限标识",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("permission")}</div>
+    ),
   },
 
   {
-    accessorKey: "phone",
-    header: "手机",
+    accessorKey: "order_no",
+    header: "排序",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("phone")}</div>
+      <div className="capitalize">{row.getValue("order_no")}</div>
     ),
   },
   {
-    accessorKey: "remark",
-    header: "备注",
+    accessorKey: "component",
+    header: "路由缓存",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("remark")}</div>
+      <div className="capitalize">{row.getValue("component")}</div>
     ),
   },
+  {
+    accessorKey: "show",
+    header: "是否显示",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("show")}</div>
+    ),
+  },
+  
 
   {
     accessorKey: "status",
@@ -239,7 +241,7 @@ import {
 } from "~/islands/primitives/ui/avatar";
 import { Badge } from "./primitives/badge";
 
-export default function UserListCtx({ users }) {
+export default function MenuListCtx({ roles }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -248,8 +250,9 @@ export default function UserListCtx({ users }) {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+
   const table = useReactTable({
-    data: users,
+    data: roles,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

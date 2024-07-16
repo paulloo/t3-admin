@@ -30,42 +30,42 @@ export const oauthProvidersClerk = [
 }[];
 
 export const appts = {
-  name: "Relivator",
+  name: "T3 Admin",
   debug: false,
   social: networks({
-    youtube: "@bleverse_com",
-    discord: "Pb8uKbwpsJ",
-    facebook: "groups/bleverse",
-    twitter: "blefnk",
-    github: "blefnk",
+    youtube: "@paulloo",
+    discord: "paulloo",
+    facebook: "groups/paulloo",
+    twitter: "paullood",
+    github: "paulloo",
   }),
 };
 
 export default appts;
 
 const links = {
-  twitter: "https://x.com/blefnk",
-  github: "https://github.com/blefnk/relivator",
-  githubAccount: "https://github.com/blefnk",
-  discord: "https://discord.gg/Pb8uKbwpsJ",
-  facebook: "https://facebook.com/groups/bleverse",
+  twitter: "https://x.com/paullood",
+  github: "https://github.com/paulloo/t3-admin",
+  githubAccount: "https://github.com/paulloo",
+  discord: "https://discord.com/invite/wCA2CUHRPB",
+  facebook: "https://facebook.com/groups/paulloo",
 };
 
 export const contactConfig = {
   email: "blefnk@gmail.com",
 };
 
-export const REPOSITORY_OWNER = "blefnk";
-export const REPOSITORY_NAME = "relivator";
+export const REPOSITORY_OWNER = "paulloo";
+export const REPOSITORY_NAME = "t3-admin";
 export const REPOSITORY_URL = `https://github.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}`;
-export const DISCORD_URL = "https://discord.gg/Pb8uKbwpsJ";
+export const DISCORD_URL = "https://discord.com/invite/wCA2CUHRPB";
 export const baseUrl = new URL(
   env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
 );
 
 export const BASE_URL =
   process.env.NODE_ENV === "production" ? baseUrl : "http://localhost:3000";
-export const BRAND_NAME = "Relivator";
+export const BRAND_NAME = "T3Admin";
 export const BRAND_DESCRIPTION =
   "Next.js 14 free store and dashboard template. It helps you build great eCommerce and SaaS apps faster than ever. Get it now!";
 
@@ -81,34 +81,36 @@ export const settings = {
 };
 
 export const siteConfig = {
-  name: "Relivator",
-  shortName: "Relivator",
+  name: "T3Admin",
+  shortName: "T3Admin",
   author: "Nazarii Korniienko",
   description:
     "NextJS 14 free starter: store, landing, dashboard. It helps you build great eCommerce and SaaS apps faster than ever. Get it!",
   company: {
-    name: "Nazarii Korniienko",
-    link: "https://github.com/blefnk/relivator",
-    email: "blefnk@gmail.com",
-    twitter: "@blefnk",
+    name: "Wealth Ape",
+    link: "https://github.com/paulloo/t3-admin",
+    email: "dongpoding@gmail.com",
+    twitter: "@paullood",
   },
   handles: {
-    twitter: "@blefnk",
+    twitter: "@paullood",
   },
   keywords: [
     "App Router",
-    "Blefonix",
-    "Bleverse",
+    "paulloo",
+    "t3-admin",
     "Drizzle Orm",
+    "Prisma Orm",
     "Landing Page",
     "Next.js 14",
     "Nextjs",
     "Open Source",
     "Parallel Routes",
     "PostgreSQL",
+    "MysqlSQL",
     "Radix Ui",
     "React",
-    "Relivator",
+    "T3Admin",
     "Server Actions",
     "Server Components",
     "Shadcn/UI",
@@ -127,51 +129,63 @@ export const siteConfig = {
   ogImage: `${env.NEXT_PUBLIC_APP_URL}/og-image.png`,
   mainNav: [
     {
-      title: "Lobby",
+      title: "系统管理",
       items: [
         {
-          title: "SystemUser",
+          title: "用户管理",
           href: "/system/user",
           description: "system user management.",
           items: [],
         },
         {
-          title: "Products",
-          href: "/products",
-          description: "All the products we have to offer.",
+          title: "角色管理",
+          href: "/system/role",
+          description: "system role management.",
           items: [],
         },
         {
-          title: "Build a Look",
-          href: "/custom/clothing",
-          description: "Build your own custom clothes.",
+          title: "菜单管理",
+          href: "/system/menu",
+          description: "system menu management.",
           items: [],
         },
-        {
-          title: "Blog",
-          href: "/blog",
-          description: "Read our latest blog posts.",
-          items: [],
-        },
+        // {
+        //   title: "Products",
+        //   href: "/products",
+        //   description: "All the products we have to offer.",
+        //   items: [],
+        // },
+        // {
+        //   title: "Build a Look",
+        //   href: "/custom/clothing",
+        //   description: "Build your own custom clothes.",
+        //   items: [],
+        // },
+        // {
+        //   title: "Blog",
+        //   href: "/blog",
+        //   description: "Read our latest blog posts.",
+        //   items: [],
+        // },
       ],
     },
-    ...productCategories.map((category) => ({
-      title: category.title,
-      items: [
-        {
-          title: "All",
-          href: `/categories/${slugify(category.title)}`,
-          description: `All ${category.title}.`,
-          items: [],
-        },
-        ...category.subcategories.map((subcategory) => ({
-          title: subcategory.title,
-          href: `/categories/${slugify(category.title)}/${subcategory.slug}`,
-          description: subcategory.description,
-          items: [],
-        })),
-      ],
-    })),
+    // ...productCategories.map((category) => ({
+    //   title: category.title,
+    //   items: [
+    //     {
+    //       title: "All",
+    //       href: `/categories/${slugify(category.title)}`,
+    //       description: `All ${category.title}.`,
+    //       items: [],
+    //     },
+    //     ...category.subcategories.map((subcategory) => ({
+    //       title: subcategory.title,
+    //       href: `/categories/${slugify(category.title)}/${subcategory.slug}`,
+    //       description: subcategory.description,
+    //       items: [],
+    //     })),
+    //   ],
+    // })),
   ] satisfies MainMenuItem[],
   links,
   footerNav: [
@@ -194,8 +208,8 @@ export const siteConfig = {
           external: true,
         },
         {
-          title: "Relivator",
-          href: "https://relivator.bleverse.com",
+          title: "T3Admin",
+          href: "https://T3Admin.bleverse.com",
           external: true,
         },
       ],
@@ -254,8 +268,8 @@ export const siteConfig = {
       title: "Github",
       items: [
         {
-          title: "Relivator",
-          href: "https://github.com/blefnk/relivator",
+          title: "T3Admin",
+          href: "https://github.com/blefnk/T3Admin",
           external: true,
         },
         {
@@ -280,7 +294,7 @@ export const siteConfig = {
 
 export const featureCards: ContentSection = {
   header: "Powered by",
-  subheader: "What Makes Relivator Possible",
+  subheader: "What Makes T3Admin Possible",
   content: [
     {
       text: "Next.js",
@@ -299,7 +313,7 @@ export const featureCards: ContentSection = {
 
 export const features: ContentSection = {
   header: "Features",
-  subheader: "Why You Need to Download Relivator",
+  subheader: "Why You Need to Download T3Admin",
   content: [
     {
       text: "SEO Optimized",
