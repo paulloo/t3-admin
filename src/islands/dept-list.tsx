@@ -64,123 +64,27 @@ const getMenuType = (type: number) => {
   }
 };
 
+
+
+  //           <TableHead>部门名称</TableHead>
+  //           <TableHead>排序</TableHead>
 export const columns: ColumnDef<User>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
-    header: "序号",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
-  },
+ 
   
   {
     accessorKey: "name",
-    header: "名称",
+    header: "部门名称",
     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
-
+ 
   {
-    accessorKey: "icon",
-    header: "图标",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("icon")}</div>,
-  },
-  {
-    accessorKey: "type",
-    header: "类型",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {
-          getMenuType(row.getValue("type"))
-        }
-      </div>
-    ),
-  },
-  {
-    accessorKey: "path",
-    header: "节点路由",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("path")}</div>
-    ),
-  },
-  {
-    accessorKey: "component",
-    header: "文件路径",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("component")}</div>
-    ),
-  },
-  {
-    accessorKey: "permission",
-    header: "权限标识",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("permission")}</div>
-    ),
-  },
-
-  {
-    accessorKey: "order_no",
+    accessorKey: "orderNo",
     header: "排序",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("order_no")}</div>
-    ),
-  },
-  {
-    accessorKey: "component",
-    header: "路由缓存",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("component")}</div>
-    ),
-  },
-  {
-    accessorKey: "show",
-    header: "是否显示",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("show")}</div>
+      <div className="capitalize">{row.getValue("orderNo")}</div>
     ),
   },
   
-
-  {
-    accessorKey: "status",
-    header: "状态",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.getValue("status") === 0
-          ? "禁用"
-          : row.getValue("status") === 1
-            ? "启用"
-            : "未知"}
-      </div>
-    ),
-  },
-
-  {
-    accessorKey: "created_at",
-    header: "创建时间",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.original.created_at?.toISOString()}</div>
-    ),
-  },
   {
     accessorKey: "updated_at",
     header: "更新时间",
@@ -188,21 +92,7 @@ export const columns: ColumnDef<User>[] = [
       <div className="capitalize">{row.original.updated_at?.toISOString()}</div>
     ),
   },
-  // {
-  //   accessorKey: "amount",
-  //   header: () => <div className="text-right">Amount</div>,
-  //   cell: ({ row }) => {
-  //     const amount = parseFloat(row.getValue("amount"))
-
-  //     // Format the amount as a dollar amount
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(amount)
-
-  //     return <div className="text-right font-medium">{formatted}</div>
-  //   },
-  // },
+  
   {
     id: "actions",
     enableHiding: false,
@@ -241,7 +131,7 @@ import {
 } from "~/islands/primitives/ui/avatar";
 import { Badge } from "./primitives/badge";
 
-export default function MenuListCtx({ menu }) {
+export default function DeptListCtx({ deptList }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -252,7 +142,7 @@ export default function MenuListCtx({ menu }) {
 
 
   const table = useReactTable({
-    data: menu,
+    data: deptList,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

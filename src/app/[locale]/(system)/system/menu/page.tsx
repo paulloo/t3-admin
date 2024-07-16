@@ -14,7 +14,7 @@ export default async function SystemMenuPage() {
         </PageHeaderDescription>
       </PageHeader>
     <div className="flex w-screen items-center justify-center bg-gray-50">
-      <MenuListCtx roles={menuList} />
+      <MenuListCtx menu={menuList} />
     </div>
     </Shell>
   );

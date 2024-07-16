@@ -149,6 +149,12 @@ export const siteConfig = {
           description: "system menu management.",
           items: [],
         },
+        {
+          title: "部门管理",
+          href: "/system/dept",
+          description: "system dept management.",
+          items: [],
+        },
         // {
         //   title: "Products",
         //   href: "/products",
